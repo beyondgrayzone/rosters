@@ -1,25 +1,25 @@
 package models
 
 type Issue struct {
-	ID            string                 `json:"id"`
-	Title         string                 `json:"title"`
-	Status        string                 `json:"status"`
-	Type          string                 `json:"type"`
-	Priority      int                    `json:"priority"`
-	Assignee      *string                `json:"assignee,omitempty"`
-	Description   *string                `json:"description,omitempty"`
-	CloseReason   *string                `json:"closeReason,omitempty"`
-	Blocks        []string               `json:"blocks,omitempty"`
-	BlockedBy     []string               `json:"blockedBy,omitempty"`
-	Labels        []string               `json:"labels,omitempty"`
-	Convoy        *string                `json:"convoy,omitempty"`
-	PlanID        *string                `json:"plan_id,omitempty"`
-	PlanStepIndex *int                   `json:"plan_step_index,omitempty"`
-	RequiresPlan  *bool                  `json:"requires_plan,omitempty"`
+	ID            string         `json:"id"`
+	Title         string         `json:"title"`
+	Status        string         `json:"status"`
+	Type          string         `json:"type"`
+	Priority      int            `json:"priority"`
+	Assignee      *string        `json:"assignee,omitempty"`
+	Description   *string        `json:"description,omitempty"`
+	CloseReason   *string        `json:"closeReason,omitempty"`
+	Blocks        []string       `json:"blocks,omitempty"`
+	BlockedBy     []string       `json:"blockedBy,omitempty"`
+	Labels        []string       `json:"labels,omitempty"`
+	Convoy        *string        `json:"convoy,omitempty"`
+	PlanID        *string        `json:"plan_id,omitempty"`
+	PlanStepIndex *int           `json:"plan_step_index,omitempty"`
+	RequiresPlan  *bool          `json:"requires_plan,omitempty"`
 	Extensions    map[string]any `json:"extensions,omitempty"`
-	CreatedAt     string                 `json:"createdAt"`
-	UpdatedAt     string                 `json:"updatedAt"`
-	ClosedAt      *string                `json:"closedAt,omitempty"`
+	CreatedAt     string         `json:"createdAt"`
+	UpdatedAt     string         `json:"updatedAt"`
+	ClosedAt      *string        `json:"closedAt,omitempty"`
 }
 
 type PlanStatus string
@@ -40,18 +40,18 @@ const (
 )
 
 type Plan struct {
-	ID          string                 `json:"id"`
-	Rosters      string                 `json:"rosters"`
-	Template    string                 `json:"template"`
-	Status      PlanStatus             `json:"status"`
-	Revision    int                    `json:"revision"`
+	ID          string         `json:"id"`
+	Rosters     string         `json:"rosters"`
+	Template    string         `json:"template"`
+	Status      PlanStatus     `json:"status"`
+	Revision    int            `json:"revision"`
 	Sections    map[string]any `json:"sections"`
-	Children    []string               `json:"children"`
-	Outcome     *PlanOutcome           `json:"outcome,omitempty"`
-	OutcomeNote *string                `json:"outcomeNote,omitempty"`
-	ReviewedBy  *string                `json:"reviewedBy,omitempty"`
-	CreatedAt   string                 `json:"createdAt"`
-	UpdatedAt   string                 `json:"updatedAt"`
+	Children    []string       `json:"children"`
+	Outcome     *PlanOutcome   `json:"outcome,omitempty"`
+	OutcomeNote *string        `json:"outcomeNote,omitempty"`
+	ReviewedBy  *string        `json:"reviewedBy,omitempty"`
+	CreatedAt   string         `json:"createdAt"`
+	UpdatedAt   string         `json:"updatedAt"`
 }
 
 type TemplateStep struct {
@@ -82,13 +82,13 @@ const (
 )
 
 type SectionSpec struct {
-	Required    bool        `json:"required"`
-	Kind        any `json:"kind"` // SectionKind or map[string]SectionSpec
-	Prompt      string      `json:"prompt"`
-	MinLength   *int        `json:"min_length,omitempty"`
-	Min         *int        `json:"min,omitempty"`
-	Item        any `json:"item,omitempty"` // "text" or map[string]SectionSpec
-	MulchSource *string     `json:"mulch_source,omitempty"`
+	Required    bool    `json:"required"`
+	Kind        any     `json:"kind"`
+	Prompt      string  `json:"prompt"`
+	MinLength   *int    `json:"min_length,omitempty"`
+	Min         *int    `json:"min,omitempty"`
+	Item        any     `json:"item,omitempty"`
+	MulchSource *string `json:"mulch_source,omitempty"`
 }
 
 type PlanTemplate struct {

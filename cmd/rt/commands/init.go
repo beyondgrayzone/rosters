@@ -11,7 +11,6 @@ import (
 	"rosters/pkg/models"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v3"
 )
 
 func RegisterInitCommand(rootCmd *cobra.Command) {
@@ -20,12 +19,11 @@ func RegisterInitCommand(rootCmd *cobra.Command) {
 		Short: "Initialize .rosters/ in current directory",
 		RunE:  runInit,
 	}
-	initCmd.Flags().Bool("json", false, "Output as JSON")
 	rootCmd.AddCommand(initCmd)
 }
 
 func runInit(cmd *cobra.Command, args []string) error {
-	jsonMode, _ := cmd.Flags().GetBool("json")
+	isJSON := format.GetFormat() == "json"
 
 	cwd, err := os.Getwd()
 	if err != nil {
@@ -36,7 +34,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 	configPath := filepath.Join(rostersDir, models.ConfigFile)
 
 	if _, err := os.Stat(configPath); err == nil {
-		if jsonMode {
+		if isJSON {
 			format.OutputJSON(map[string]any{
 				"success": true,
 				"command": "init",
@@ -53,29 +51,21 @@ func runInit(cmd *cobra.Command, args []string) error {
 	}
 
 	projectName := filepath.Base(cwd)
-	configData := map[string]any{
-		"project":        projectName,
-		"version":        "1",
-		"max_plan_depth": models.DefaultMaxPlanDepth,
-	}
+	configContent := fmt.Sprintf("project: \"%s\"\nversion: \"1\"\nmax_plan_depth: %d\n",
+		projectName, models.DefaultMaxPlanDepth)
 
-	configContent, err := yaml.Marshal(configData)
-	if err != nil {
-		return err
-	}
-
-	if err := os.WriteFile(configPath, configContent, 0600); err != nil {
+	if err := os.WriteFile(configPath, []byte(configContent), 0644); err != nil {
 		return err
 	}
 
 	for _, file := range []string{models.IssuesFile, models.TemplatesFile, models.PlansFile} {
-		if err := os.WriteFile(filepath.Join(rostersDir, file), []byte(""), 0600); err != nil {
+		if err := os.WriteFile(filepath.Join(rostersDir, file), []byte(""), 0644); err != nil {
 			return err
 		}
 	}
 
 	gitignorePath := filepath.Join(rostersDir, ".gitignore")
-	if err := os.WriteFile(gitignorePath, []byte("*.lock\n"), 0600); err != nil {
+	if err := os.WriteFile(gitignorePath, []byte("*.lock\n"), 0644); err != nil {
 		return err
 	}
 
@@ -88,17 +78,21 @@ func runInit(cmd *cobra.Command, args []string) error {
 
 	if existing, err := os.ReadFile(gitattrsPath); err == nil {
 		if !strings.Contains(string(existing), fmt.Sprintf("%s/%s", models.SeedsDirName, models.IssuesFile)) {
-			if err := os.WriteFile(gitattrsPath, append(existing, []byte("\n"+entry)...), 0600); err != nil {
+			content := string(existing)
+			if !strings.HasSuffix(content, "\n") {
+				content += "\n"
+			}
+			if err := os.WriteFile(gitattrsPath, []byte(content+entry), 0644); err != nil {
 				return err
 			}
 		}
 	} else if os.IsNotExist(err) {
-		if err := os.WriteFile(gitattrsPath, []byte(entry), 0600); err != nil {
+		if err := os.WriteFile(gitattrsPath, []byte(entry), 0644); err != nil {
 			return err
 		}
 	}
 
-	if jsonMode {
+	if isJSON {
 		format.OutputJSON(map[string]any{
 			"success": true,
 			"command": "init",

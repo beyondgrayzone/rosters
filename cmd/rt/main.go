@@ -13,15 +13,17 @@ import (
 const VERSION = "0.1.0"
 
 var (
-	quiet   bool
-	jsonOut bool
-	verbose bool
-	timing  bool
+	quiet      bool
+	jsonOut    bool
+	verbose    bool
+	timing     bool
+	formatFlag string
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "rt",
-	Short: "Git Native Issue Tracker for AI Agents",
+	Use:     "rt",
+	Short:   "Git Native Issue Tracker for AI Agents",
+	Version: VERSION,
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},
@@ -31,20 +33,28 @@ func init() {
 	commands.RegisterInitCommand(rootCmd)
 	rootCmd.PersistentFlags().BoolVarP(&quiet, "quiet", "q", false, "Suppress non-error output")
 	rootCmd.PersistentFlags().BoolVar(&jsonOut, "json", false, "Output as structured JSON")
+	rootCmd.PersistentFlags().StringVar(&formatFlag, "format", "markdown", "Output format (markdown, compact, plain, ids, json)")
 	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "Show full details in output")
 	rootCmd.PersistentFlags().BoolVar(&timing, "timing", false, "Print execution time to stderr")
-	rootCmd.Version = VERSION
 }
 
 func main() {
 	startTime := time.Now()
-	format.SetQuiet(quiet)
-	format.SetJSONMode(jsonOut)
+
+	if err := rootCmd.ParseFlags(os.Args); err == nil {
+		format.SetQuiet(quiet)
+		if jsonOut {
+			format.SetFormat("json")
+		} else {
+			format.SetFormat(formatFlag)
+		}
+	}
 
 	if err := rootCmd.Execute(); err != nil {
 		format.PrintError(err.Error())
 		os.Exit(1)
 	}
+
 	if timing {
 		format.PrintTiming(time.Since(startTime))
 	}
