@@ -68,7 +68,7 @@ var BuiltinBugTemplate = &models.PlanTemplate{
 			Required:  true,
 			Kind:      "text",
 			MinLength: new(50),
-			Prompt:    "What's actually broken? Trace the defect to its source, not just the symptom.",
+			Prompt:    "What's actually lroken? Trace the defect to its source, not just the symptom.",
 		},
 		"approach": {
 			Required: true,

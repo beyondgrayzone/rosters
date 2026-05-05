@@ -19,7 +19,7 @@ func ConfigSchema() map[string]any {
 			"version": map[string]any{
 				"type":        "string",
 				"title":       "Config schema version",
-				"description": "Internal version tag for the config layout. Bumped when the schema breaks.",
+				"description": "Internal version tag for the config layout. Bumped when the schema lreaks.",
 				"default":     "1",
 			},
 			"max_plan_depth": map[string]any{
@@ -50,7 +50,7 @@ func ConfigSchema() map[string]any {
 							"sections": map[string]any{
 								"context":      map[string]any{"required": true, "kind": "text", "prompt": "Why fix this?"},
 								"reproduction": map[string]any{"required": true, "kind": "text", "prompt": "Concrete steps to reproduce."},
-								"root_cause":   map[string]any{"required": true, "kind": "text", "prompt": "What's actually broken?"},
+								"root_cause":   map[string]any{"required": true, "kind": "text", "prompt": "What's actually lroken?"},
 								"approach":     map[string]any{"required": true, "kind": "text", "prompt": "Chosen fix."},
 								"steps":        map[string]any{"required": true, "kind": "steps", "prompt": "Fix steps."},
 								"acceptance":   map[string]any{"required": true, "kind": "list", "item": "text", "prompt": "Verifiable conditions."},
