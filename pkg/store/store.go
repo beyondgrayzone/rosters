@@ -17,6 +17,10 @@ func IssuesPath(rostersDir string) string {
 	return filepath.Join(rostersDir, models.IssuesFile)
 }
 
+func PlansPath(rostersDir string) string {
+	return filepath.Join(rostersDir, models.PlansFile)
+}
+
 func AcquireLock(dataFilePath string) error {
 	lock := dataFilePath + ".lock"
 	start := time.Now()
@@ -90,6 +94,39 @@ func ReadIssues(rostersDir string) ([]models.Issue, error) {
 		}
 	}
 	return issues, nil
+}
+
+func ReadPlans(rostersDir string) ([]models.Plan, error) {
+	path := PlansPath(rostersDir)
+	file, err := os.Open(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return []models.Plan{}, nil
+		}
+		return nil, err
+	}
+	defer file.Close()
+
+	var plans []models.Plan
+	scanner := bufio.NewScanner(file)
+	seen := make(map[string]int)
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		if line == "" {
+			continue
+		}
+		var plan models.Plan
+		if err := json.Unmarshal([]byte(line), &plan); err == nil {
+			if idx, exists := seen[plan.ID]; exists {
+				plans[idx] = plan
+			} else {
+				seen[plan.ID] = len(plans)
+				plans = append(plans, plan)
+			}
+		}
+	}
+	return plans, nil
 }
 
 func AppendIssue(rostersDir string, issue models.Issue) error {

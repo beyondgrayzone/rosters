@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"rosters/cmd/skl/commands"
+	"rosters/cmd/rt/commands"
 	"rosters/pkg/format"
 
 	"github.com/spf13/cobra"
@@ -33,6 +33,7 @@ func init() {
 	commands.RegisterInitCommand(rootCmd)
 	commands.RegisterDoctorCommand(rootCmd)
 	commands.RegisterCreateCommand(rootCmd)
+	commands.RegisterShowCommand(rootCmd)
 
 	rootCmd.PersistentFlags().BoolVarP(&quiet, "quiet", "q", false, "Suppress non-error output")
 	rootCmd.PersistentFlags().BoolVar(&jsonOut, "json", false, "Output as structured JSON")

@@ -1,6 +1,7 @@
 package store
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
@@ -52,5 +53,47 @@ func TestStore_Issues(t *testing.T) {
 
 	if len(issues) != 1 || issues[0].ID != "test-1" {
 		t.Errorf("unexpected issues: %v", issues)
+	}
+}
+
+func TestStore_Plans(t *testing.T) {
+	tmpDir := t.TempDir()
+	plan := models.Plan{ID: "pl-1", Roster: "test-1", Status: models.PlanStatusApproved}
+
+	path := PlansPath(tmpDir)
+	data, _ := json.Marshal(plan)
+	os.WriteFile(path, append(data, '\n'), 0644)
+
+	plans, err := ReadPlans(tmpDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(plans) != 1 || plans[0].ID != "pl-1" {
+		t.Errorf("unexpected plans: %v", plans)
+	}
+}
+
+func TestStore_Deduplication(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := IssuesPath(tmpDir)
+
+	i1 := models.Issue{ID: "test-1", Title: "Version 1"}
+	i2 := models.Issue{ID: "test-1", Title: "Version 2"} // Update for same ID
+
+	d1, _ := json.Marshal(i1)
+	d2, _ := json.Marshal(i2)
+	os.WriteFile(path, append(append(d1, '\n'), append(d2, '\n')...), 0644)
+
+	issues, err := ReadIssues(tmpDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(issues) != 1 {
+		t.Fatalf("expected 1 issue after deduplication, got %d", len(issues))
+	}
+	if issues[0].Title != "Version 2" {
+		t.Errorf("expected last entry to win, got title: %s", issues[0].Title)
 	}
 }

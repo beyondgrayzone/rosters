@@ -20,8 +20,6 @@ func TestGenerateID(t *testing.T) {
 	})
 
 	t.Run("handles collisions", func(t *testing.T) {
-		// No real way to force 100 collisions easily without mocking rand,
-		// but we verify basic uniqueness.
 		ids := make(map[string]bool)
 		for i := 0; i < 100; i++ {
 			id := GenerateID(prefix, nil)

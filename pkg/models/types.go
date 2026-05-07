@@ -40,18 +40,20 @@ const (
 )
 
 type Plan struct {
-	ID          string         `json:"id"`
-	Rosters     string         `json:"rosters"`
-	Template    string         `json:"template"`
-	Status      PlanStatus     `json:"status"`
-	Revision    int            `json:"revision"`
-	Sections    map[string]any `json:"sections"`
-	Children    []string       `json:"children"`
-	Outcome     *PlanOutcome   `json:"outcome,omitempty"`
-	OutcomeNote *string        `json:"outcomeNote,omitempty"`
-	ReviewedBy  *string        `json:"reviewedBy,omitempty"`
-	CreatedAt   string         `json:"createdAt"`
-	UpdatedAt   string         `json:"updatedAt"`
+	ID              string         `json:"id"`
+	Roster          string         `json:"roster"`
+	Template        string         `json:"template"`
+	Name            *string        `json:"name,omitempty"`
+	Status          PlanStatus     `json:"status"`
+	Revision        int            `json:"revision"`
+	Sections        map[string]any `json:"sections"`
+	Children        []string       `json:"children"`
+	AdoptedChildren []string       `json:"adoptedChildren,omitempty"`
+	Outcome         *PlanOutcome   `json:"outcome,omitempty"`
+	OutcomeNote     *string        `json:"outcomeNote,omitempty"`
+	ReviewedBy      *string        `json:"reviewedBy,omitempty"`
+	CreatedAt       string         `json:"createdAt"`
+	UpdatedAt       string         `json:"updatedAt"`
 }
 
 type TemplateStep struct {
