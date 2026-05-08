@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"rosters/pkg/models"
 )
@@ -56,6 +57,20 @@ func TestStore_Issues(t *testing.T) {
 	}
 }
 
+func TestStore_WriteIssues(t *testing.T) {
+	tmpDir := t.TempDir()
+	issues := []models.Issue{{ID: "a", Title: "A"}, {ID: "b", Title: "B"}}
+
+	if err := WriteIssues(tmpDir, issues); err != nil {
+		t.Fatal(err)
+	}
+
+	read, _ := ReadIssues(tmpDir)
+	if len(read) != 2 || read[1].ID != "b" {
+		t.Errorf("WriteIssues failed, got %v", read)
+	}
+}
+
 func TestStore_Plans(t *testing.T) {
 	tmpDir := t.TempDir()
 	plan := models.Plan{ID: "pl-1", Roster: "test-1", Status: models.PlanStatusApproved}
@@ -79,7 +94,7 @@ func TestStore_Deduplication(t *testing.T) {
 	path := IssuesPath(tmpDir)
 
 	i1 := models.Issue{ID: "test-1", Title: "Version 1"}
-	i2 := models.Issue{ID: "test-1", Title: "Version 2"} // Update for same ID
+	i2 := models.Issue{ID: "test-1", Title: "Version 2"}
 
 	d1, _ := json.Marshal(i1)
 	d2, _ := json.Marshal(i2)
@@ -95,5 +110,27 @@ func TestStore_Deduplication(t *testing.T) {
 	}
 	if issues[0].Title != "Version 2" {
 		t.Errorf("expected last entry to win, got title: %s", issues[0].Title)
+	}
+}
+
+func TestStore_StaleLockCleanup(t *testing.T) {
+	tmpDir := t.TempDir()
+	path := filepath.Join(tmpDir, "stale.jsonl")
+	lockPath := path + ".lock"
+
+	f, _ := os.Create(lockPath)
+	f.Close()
+
+	staleTime := time.Now().Add(-time.Duration(models.LockStaleMS+1000) * time.Millisecond)
+	os.Chtimes(lockPath, staleTime, staleTime)
+
+	err := AcquireLock(path)
+	if err != nil {
+		t.Fatalf("AcquireLock failed to handle stale lock: %v", err)
+	}
+	defer ReleaseLock(path)
+
+	if _, err := os.Stat(lockPath); os.IsNotExist(err) {
+		t.Error("lock file should exist after being acquired")
 	}
 }

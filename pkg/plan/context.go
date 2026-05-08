@@ -1,6 +1,8 @@
 package plan
 
 import (
+	"fmt"
+	"rosters/pkg/format"
 	"rosters/pkg/models"
 	"rosters/pkg/store"
 )
@@ -42,6 +44,16 @@ func PlanForIssue(ctx *PlanContext, issue models.Issue) *models.Plan {
 		return nil
 	}
 	return &plan
+}
+
+func PlanLineSuffix(p *models.Plan) string {
+	if p == nil {
+		return ""
+	}
+	if p.Status == models.PlanStatusDraft {
+		return fmt.Sprintf(" %s", format.Accent.Sprint("[plan in draft - run rt plan submit]"))
+	}
+	return fmt.Sprintf(" %s", format.Muted.Sprintf("[plan %s]", p.Status))
 }
 
 type ChildSummary struct {

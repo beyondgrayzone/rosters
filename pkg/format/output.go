@@ -37,10 +37,6 @@ func SetQuiet(v bool) {
 	quietMode = v
 }
 
-func SetJSONMode(v bool) {
-	jsonMode = v
-}
-
 func SetFormat(mode string) {
 	formatMode = mode
 	if mode == "plain" {
@@ -82,6 +78,85 @@ func PrintTiming(d time.Duration) {
 	if !quietMode {
 		Muted.Fprintf(os.Stderr, "Done in %dms\n", d.Milliseconds())
 	}
+}
+
+func isEffectivelyBlocked(issue models.Issue, closedBlockerIds map[string]bool) bool {
+	if len(issue.BlockedBy) == 0 {
+		return false
+	}
+	if closedBlockerIds == nil {
+		return true
+	}
+	for _, bid := range issue.BlockedBy {
+		if !closedBlockerIds[bid] {
+			return true
+		}
+	}
+	return false
+}
+
+func FormatIssueOneLine(issue models.Issue, closedBlockerIds map[string]bool) string {
+	isBlocked := isEffectivelyBlocked(issue, closedBlockerIds)
+	var statusIcon string
+	switch {
+	case issue.Status == "closed":
+		statusIcon = Muted.Sprint("x")
+	case issue.Status == "in_progress":
+		statusIcon = color.CyanString(">")
+	case isBlocked:
+		statusIcon = color.YellowString("!")
+	default:
+		statusIcon = Brand.Sprint("-")
+	}
+
+	priorityLabel, ok := models.PriorityLabels[issue.Priority]
+	if !ok {
+		priorityLabel = fmt.Sprintf("%d", issue.Priority)
+	}
+
+	assignee := ""
+	if issue.Assignee != nil {
+		assignee = fmt.Sprintf(" · %s", Muted.Sprintf("@%s", *issue.Assignee))
+	}
+
+	blocked := ""
+	if isBlocked {
+		blocked = fmt.Sprintf(" %s", color.YellowString("[blocked]"))
+	}
+
+	labelStr := ""
+	if len(issue.Labels) > 0 {
+		labelStr = fmt.Sprintf(" %s", Muted.Sprintf("{%s}", strings.Join(issue.Labels, ", ")))
+	}
+
+	return fmt.Sprintf("%s %s · %s   %s%s%s%s",
+		statusIcon,
+		AccentBold(issue.ID),
+		issue.Title,
+		Muted.Sprintf("[%s · %s]", priorityLabel, issue.Type),
+		assignee,
+		blocked,
+		labelStr)
+}
+
+func FormatIssueOneLineCompact(issue models.Issue, closedBlockerIds map[string]bool) string {
+	priorityLabel, ok := models.PriorityLabels[issue.Priority]
+	if !ok {
+		priorityLabel = fmt.Sprintf("%d", issue.Priority)
+	}
+	isBlocked := isEffectivelyBlocked(issue, closedBlockerIds)
+	status := issue.Status
+	if isBlocked {
+		status = "blocked"
+	}
+	return fmt.Sprintf("%s %s %s %s", issue.ID, priorityLabel, status, issue.Title)
+}
+
+func PrintIssueOneLine(issue models.Issue, closedBlockerIds map[string]bool) {
+	if quietMode {
+		return
+	}
+	fmt.Println(FormatIssueOneLine(issue, closedBlockerIds))
 }
 
 func FormatIssueFull(issue models.Issue) string {

@@ -159,3 +159,49 @@ func randHex(n int) string {
 	rand.Read(b)
 	return hex.EncodeToString(b)
 }
+
+func WriteIssues(rostersDir string, issues []models.Issue) error {
+	path := IssuesPath(rostersDir)
+	tempPath := fmt.Sprintf("%s.tmp.%s", path, randHex(4))
+
+	f, err := os.Create(tempPath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	for _, issue := range issues {
+		data, err := json.Marshal(issue)
+		if err != nil {
+			return err
+		}
+		if _, err := f.Write(append(data, '\n')); err != nil {
+			return err
+		}
+	}
+
+	return os.Rename(tempPath, path)
+}
+
+func WritePlans(rostersDir string, plans []models.Plan) error {
+	path := PlansPath(rostersDir)
+	tempPath := fmt.Sprintf("%s.tmp.%s", path, randHex(4))
+
+	f, err := os.Create(tempPath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	for _, plan := range plans {
+		data, err := json.Marshal(plan)
+		if err != nil {
+			return err
+		}
+		if _, err := f.Write(append(data, '\n')); err != nil {
+			return err
+		}
+	}
+
+	return os.Rename(tempPath, path)
+}
