@@ -144,4 +144,17 @@ Modifies the fields of an existing issue.
     # Add a label and update the title
     rt update myproject-c3d4 --add-label "backend" --title "API: Fix connection pooling"
     ```
+##### `rt close <id> [<id2> ...]`
+Closes one or more issues.
+
+-   Options:
+    -   `--reason <text>`: Adds a reason for closing the issue.
+-   Example:
+    ```bash
+    # Close an issue with a reason
+    rt close myproject-a1b2 --reason "Completed in PR #123"
+
+    # Close multiple issues at once
+    rt close myproject-c3d4 myproject-e5f6
+    ```
 
