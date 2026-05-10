@@ -38,6 +38,7 @@ func init() {
 	commands.RegisterSearchCommand(rootCmd)
 	commands.RegisterUpdateCommand(rootCmd)
 	commands.RegisterCloseCommand(rootCmd)
+	commands.RegisterDepCommand(rootCmd)
 
 	rootCmd.PersistentFlags().BoolVarP(&quiet, "quiet", "q", false, "Suppress non-error output")
 	rootCmd.PersistentFlags().BoolVar(&jsonOut, "json", false, "Output as structured JSON")

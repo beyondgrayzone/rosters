@@ -157,4 +157,16 @@ Closes one or more issues.
     # Close multiple issues at once
     rt close myproject-c3d4 myproject-e5f6
     ```
+##### `rt dep`
+Manages dependencies between issues (A depends on B).
+
+-   Subcommands:
+    -   `add <issue> <depends-on>`: Makes `<issue>` depend on `<depends-on>`.
+    -   `remove <issue> <depends-on>`: Removes a dependency.
+    -   `list <issue>`: Shows all dependencies for an issue.
+-   Example:
+    ```bash
+    # Make issue-B depend on issue-A
+    rt dep add issue-B issue-A
+    ```
 
