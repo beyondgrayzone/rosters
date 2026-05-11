@@ -17,7 +17,6 @@ func TestSortIssues(t *testing.T) {
 		if res[0].ID != "A" {
 			t.Errorf("expected A first, got %s", res[0].ID)
 		}
-		// Same priority should sort by CreatedAt desc
 		if res[1].ID != "C" {
 			t.Errorf("expected C second (newer), got %s", res[1].ID)
 		}

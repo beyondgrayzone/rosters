@@ -169,4 +169,19 @@ Manages dependencies between issues (A depends on B).
     # Make issue-B depend on issue-A
     rt dep add issue-B issue-A
     ```
+##### `rt block` / `unblock`
+A more intuitive way to manage dependencies.
+
+-   Commands:
+    -   `block <id> --by <blocker-id>`: Marks `<id>` as blocked by `<blocker-id>`. (Equivalent to `rt dep add <id> <blocker-id>`).
+    -   `unblock <id> --from <blocker-id>`: Removes a specific blocker.
+    -   `unblock <id> --all`: Removes all *closed* blockers from an issue.
+-   Example:
+    ```bash
+    # Mark issue-B as blocked by issue-A
+    rt block issue-B --by issue-A
+
+    # Remove the block
+    rt unblock issue-B --from issue-A
+    ```
 

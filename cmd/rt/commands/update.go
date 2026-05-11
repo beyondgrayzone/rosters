@@ -250,8 +250,6 @@ func runUpdate(id string, opts updateOptions) error {
 }
 
 func labelsSetChanged(setLabels *string) bool {
-	// Simple check: in a real implementation we'd check if the flag was actually provided
-	// For this port, we rely on the pointer not being nil.
 	return setLabels != nil && *setLabels != "__NOT_SET__"
 }
 
