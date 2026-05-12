@@ -185,3 +185,7 @@ A more intuitive way to manage dependencies.
     rt unblock issue-B --from issue-A
     ```
 
+##### `rt blocked`
+Lists all issues that are currently blocked by at least one open issue.
+
+
