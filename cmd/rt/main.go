@@ -42,6 +42,7 @@ func init() {
 	commands.RegisterBlockCommand(rootCmd)
 	commands.RegisterUnblockCommand(rootCmd)
 	commands.RegisterBlockedCommand(rootCmd)
+	commands.RegisterReadyCommand(rootCmd)
 
 	rootCmd.PersistentFlags().BoolVarP(&quiet, "quiet", "q", false, "Suppress non-error output")
 	rootCmd.PersistentFlags().BoolVar(&jsonOut, "json", false, "Output as structured JSON")

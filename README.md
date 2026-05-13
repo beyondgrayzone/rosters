@@ -188,4 +188,15 @@ A more intuitive way to manage dependencies.
 ##### `rt blocked`
 Lists all issues that are currently blocked by at least one open issue.
 
+##### `rt ready`
+Shows all `open` issues that have no open blockers. This is the primary command for finding available work. It supports the same filter and sort flags as `rt list`.
+
+-   Options:
+    -   `--respect-schedule`: An opt-in flag that excludes issues parked via the `extensions` field (where `extensions.queued === true` or `extensions.scheduledFor` is in the future).
+-   Example:
+    ```bash
+    # Find the highest-priority work available for the "backend" team
+    rt ready --label backend --sort priority
+    ```
+
 
