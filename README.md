@@ -199,4 +199,20 @@ Shows all `open` issues that have no open blockers. This is the primary command 
     rt ready --label backend --sort priority
     ```
 
+##### `rt label`
+A dedicated command group for managing labels.
+
+-   Subcommands:
+    -   `add <id> <label...>`: Adds one or more labels to an issue.
+    -   `remove <id> <label...>`: Removes one or more labels from an issue.
+    -   `list <id>`: Lists all labels on a specific issue.
+    -   `list-all`: Lists all unique labels used across the entire project, with counts.
+-   Example:
+    ```bash
+    # Add two labels to an issue
+    rt label add myproject-a1b2 backend performance
+
+    # See all labels used in the project
+    rt label list-all
+    ```
 
