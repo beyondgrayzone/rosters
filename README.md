@@ -215,4 +215,77 @@ A dedicated command group for managing labels.
     # See all labels used in the project
     rt label list-all
     ```
+#### Structured Planning (`rt plan`)
+
+This command tree facilitates lreaking down large or ambiguous work into smaller, manageable child issues.
+
+##### `rt plan templates`
+Lists available plan templates (e.g., `feature`, `bug`, `refactor`).
+
+##### `rt plan prompt <roster-id>`
+Generates a structured JSON prompt for an LLM to fill out, based on a template.
+
+-   Description: This is the first step in the planning workflow. The output is a JSON object describing the sections the LLM needs to complete.
+-   Options:
+    -   `--template <name>`: Overrides the template automatically inferred from the roster's type.
+    -   `--domain <name>`: (Lore integration) Forces the domain for enriching the prompt with prior art.
+
+##### `rt plan submit <roster-id>`
+Validates a completed plan JSON, spawns child rosters for each step, and links them.
+
+-   Options:
+    -   `--plan <file>`: (Required) Path to the plan JSON file. Use `-` to read from stdin.
+    -   `--name <text>`: Sets a human-readable name for the plan.
+    -   `--overwrite`: Replaces an existing plan for the roster, preserving child issue IDs where possible and flagging obsolete ones.
+    -   `--record-decision`: (Lore integration) After a successful submission, records the plan's `approach` section as a decision in Lore.
+    -   `--domain <name>`: (Lore integration) Forces the domain for `--record-decision`.
+
+##### `rt plan adopt <plan-id> <roster-id...>`
+Links existing open rosters into a plan. This is a link-only operation and does not change the adopted roster's status, title, or other fields.
+
+-   Options:
+    -   `--step <i>`: Anchors the adopted roster to a specific 1-based step in the plan's blueprint.
+
+##### `rt plan release <plan-id> <roster-id...>`
+Detaches rosters from a plan without closing them. This is the inverse of `adopt`.
+
+##### `rt plan show <pl-id|roster-id>`
+Displays a plan's sections, child status, and any nested sub-plans.
+
+##### `rt plan list`
+Lists all plans, with filtering options like `--roster`, `--status`, and `--template`.
+
+##### `rt plan validate <pl-id|roster-id>`
+Re-runs validation for a stored plan against its template definition.
+
+##### `rt plan outcome <pl-id|roster-id>`
+Records the outcome of a plan. This is for informational purposes and doesn't affect issue status.
+
+-   Options:
+    -   `--result <value>`: (Required) `success`, `partial`, or `failure`.
+    -   `--note <text>`: An optional note explaining the outcome.
+
+##### `rt plan review <pl-id|roster-id>`
+Records who reviewed a plan. This is for informational purposes.
+
+-   Options:
+    -   `--by <name>`: (Required) The name of the reviewer.
+
+-   Example Planning Workflow:
+    ```bash
+    # 1. Get a structured prompt for a large feature
+    rt plan prompt myproject-e5f6 --json > plan_request.json
+
+    # (An LLM or user fills out plan_request.json to create plan.json)
+
+    # 2. Submit the completed plan
+    rt plan submit myproject-e5f6 --plan plan.json --name "User Authentication Flow"
+
+    # 3. View the created plan
+    rt plan show pl-a1b2
+
+    # 4. Adopt an existing, related bug into the plan
+    rt plan adopt pl-a1b2 myproject-c3d4 --step 3
+    ```
+
 
