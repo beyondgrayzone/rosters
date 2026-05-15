@@ -85,11 +85,11 @@ const (
 
 type SectionSpec struct {
 	Required    bool    `json:"required"`
-	Kind        any     `json:"kind"` // Can be SectionKind or map[string]SectionSpec
+	Kind        any     `json:"kind"`
 	Prompt      string  `json:"prompt"`
 	MinLength   *int    `json:"min_length,omitempty"`
 	Min         *int    `json:"min,omitempty"`
-	Item        any     `json:"item,omitempty"` // Can be "text" or map[string]SectionSpec
+	Item        any     `json:"item,omitempty"`
 	MulchSource *string `json:"mulch_source,omitempty"`
 }
 
@@ -112,6 +112,15 @@ type SubmittedPlan struct {
 	Template string         `json:"template"`
 	Name     *string        `json:"name,omitempty"`
 	Sections map[string]any `json:"sections"`
+}
+
+type ConvoyStatus struct {
+	TemplateID string   `json:"templateId"`
+	Total      int      `json:"total"`
+	Completed  int      `json:"completed"`
+	InProgress int      `json:"inProgress"`
+	Blocked    int      `json:"blocked"`
+	Issues     []string `json:"issues"`
 }
 
 const (

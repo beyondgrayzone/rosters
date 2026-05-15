@@ -288,4 +288,15 @@ Records who reviewed a plan. This is for informational purposes.
     rt plan adopt pl-a1b2 myproject-c3d4 --step 3
     ```
 
+#### Templates/Molecules (`rt tpl`)
+
+For creating repeatable sequences of issues.
+
+-   Subcommands:
+    -   `create --name <text>`: Creates a new template.
+    -   `step add <id> --title <text>`: Adds a step to a template. The title can include `{prefix}`.
+    -   `list`: Lists all templates.
+    -   `show <id>`: Shows a template's details and steps.
+    -   `pour <id> --prefix <text>`: Instantiates a template, creating a chain of dependent issues. The prefix replaces `{prefix}` in step titles.
+    -   `status <id>`: Shows the completion status of a "poured" template instance.
 

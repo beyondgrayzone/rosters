@@ -21,6 +21,10 @@ func PlansPath(rostersDir string) string {
 	return filepath.Join(rostersDir, models.PlansFile)
 }
 
+func TemplatesPath(rostersDir string) string {
+	return filepath.Join(rostersDir, models.TemplatesFile)
+}
+
 func AcquireLock(dataFilePath string) error {
 	lock := dataFilePath + ".lock"
 	start := time.Now()
@@ -129,6 +133,39 @@ func ReadPlans(rostersDir string) ([]models.Plan, error) {
 	return plans, nil
 }
 
+func ReadTemplates(rostersDir string) ([]models.Template, error) {
+	path := TemplatesPath(rostersDir)
+	file, err := os.Open(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return []models.Template{}, nil
+		}
+		return nil, err
+	}
+	defer file.Close()
+
+	var templates []models.Template
+	scanner := bufio.NewScanner(file)
+	seen := make(map[string]int)
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		if line == "" {
+			continue
+		}
+		var tpl models.Template
+		if err := json.Unmarshal([]byte(line), &tpl); err == nil {
+			if idx, exists := seen[tpl.ID]; exists {
+				templates[idx] = tpl
+			} else {
+				seen[tpl.ID] = len(templates)
+				templates = append(templates, tpl)
+			}
+		}
+	}
+	return templates, nil
+}
+
 func AppendIssue(rostersDir string, issue models.Issue) error {
 	path := IssuesPath(rostersDir)
 	existing, err := os.ReadFile(path)
@@ -203,5 +240,53 @@ func WritePlans(rostersDir string, plans []models.Plan) error {
 		}
 	}
 
+	return os.Rename(tempPath, path)
+}
+
+func WriteTemplates(rostersDir string, templates []models.Template) error {
+	path := TemplatesPath(rostersDir)
+	tempPath := fmt.Sprintf("%s.tmp.%s", path, randHex(4))
+
+	f, err := os.Create(tempPath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	for _, tpl := range templates {
+		data, err := json.Marshal(tpl)
+		if err != nil {
+			return err
+		}
+		if _, err := f.Write(append(data, '\n')); err != nil {
+			return err
+		}
+	}
+
+	return os.Rename(tempPath, path)
+}
+
+func AppendTemplate(rostersDir string, template models.Template) error {
+	path := TemplatesPath(rostersDir)
+	existing, err := os.ReadFile(path)
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	}
+
+	data, err := json.Marshal(template)
+	if err != nil {
+		return err
+	}
+
+	tempPath := fmt.Sprintf("%s.tmp.%s", path, randHex(4))
+	content := string(existing)
+	if len(content) > 0 && content[len(content)-1] != '\n' {
+		content += "\n"
+	}
+	content += string(data) + "\n"
+
+	if err := os.WriteFile(tempPath, []byte(content), 0644); err != nil {
+		return err
+	}
 	return os.Rename(tempPath, path)
 }
