@@ -300,3 +300,21 @@ For creating repeatable sequences of issues.
     -   `pour <id> --prefix <text>`: Instantiates a template, creating a chain of dependent issues. The prefix replaces `{prefix}` in step titles.
     -   `status <id>`: Shows the completion status of a "poured" template instance.
 
+#### Configuration (`rt config`)
+
+Provides a schema-driven interface for reading and writing `.rosters/config.yaml`.
+
+-   Subcommands:
+    -   `schema`: Emits the JSON Schema for the config file.
+    -   `show [--path <dot.path>]`: Prints the whole config or a specific value.
+    -   `set <dot.path> <value>`: Sets a value at a given path. The value is YAML-parsed.
+    -   `unset <dot.path>`: Removes a value.
+-   Example:
+    ```bash
+    # See the schema for the config file
+    rt config schema --json
+
+    # Set the maximum depth for nested plan display
+    rt config set max_plan_depth 5
+    ```
+

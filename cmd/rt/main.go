@@ -46,6 +46,7 @@ func init() {
 	commands.RegisterLabelCommand(rootCmd)
 	commands.RegisterPlanCommand(rootCmd)
 	commands.RegisterTplCommand(rootCmd)
+	commands.RegisterConfigCommand(rootCmd)
 
 	rootCmd.PersistentFlags().BoolVarP(&quiet, "quiet", "q", false, "Suppress non-error output")
 	rootCmd.PersistentFlags().BoolVar(&jsonOut, "json", false, "Output as structured JSON")
