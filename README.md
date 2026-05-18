@@ -317,4 +317,10 @@ Provides a schema-driven interface for reading and writing `.rosters/config.yaml
     # Set the maximum depth for nested plan display
     rt config set max_plan_depth 5
     ```
+##### `rt prime`
+Outputs context for an AI agent, including rules, command references, and workflows.
+
+-   Options:
+    -   `--compact`: Provides a condensed, quick-reference version.
+    -   `--json`: Outputs the context as a structured JSON object with typed `sections`, which is used by the `pi-coding-agent` extension.
 

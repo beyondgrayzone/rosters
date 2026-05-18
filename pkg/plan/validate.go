@@ -36,7 +36,6 @@ func ValidatePlan(plan models.SubmittedPlan, template models.PlanTemplate) Valid
 		validateSection(fmt.Sprintf("sections.%s", name), val, spec, &res)
 	}
 
-	// Validate steps blocks
 	if steps, ok := plan.Sections["steps"].([]any); ok {
 		for i, s := range steps {
 			if step, ok := s.(map[string]any); ok {
@@ -72,7 +71,6 @@ func ValidatePlan(plan models.SubmittedPlan, template models.PlanTemplate) Valid
 func validateSection(path string, val any, spec models.SectionSpec, res *ValidationResult) {
 	kind, ok := spec.Kind.(string)
 	if !ok {
-		// Nested object kind validation could be added here
 		return
 	}
 
