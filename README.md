@@ -324,3 +324,6 @@ Outputs context for an AI agent, including rules, command references, and workfl
     -   `--compact`: Provides a condensed, quick-reference version.
     -   `--json`: Outputs the context as a structured JSON object with typed `sections`, which is used by the `pi-coding-agent` extension.
 
+
+##### `rt onboard`
+Adds or updates a "Rosters" section in a project's `CLAUDE.md` or `AGENTS.md` file. It's idempotent and detects if a pi-aware variant is needed. Default target is AGENTS.md

@@ -1,5 +1,7 @@
 package models
 
+const Version = "0.1.0"
+
 type Issue struct {
 	ID            string         `json:"id"`
 	Title         string         `json:"title"`
