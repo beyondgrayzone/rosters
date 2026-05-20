@@ -327,3 +327,7 @@ Outputs context for an AI agent, including rules, command references, and workfl
 
 ##### `rt onboard`
 Adds or updates a "Rosters" section in a project's `CLAUDE.md` or `AGENTS.md` file. It's idempotent and detects if a pi-aware variant is needed. Default target is AGENTS.md
+
+##### `rt sync`
+Stages and commits all changes within the `.rosters/` directory.
+
