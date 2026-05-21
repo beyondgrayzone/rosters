@@ -52,8 +52,13 @@ func GetFormat() string {
 }
 
 func OutputJSON(data any) {
-	b, _ := json.MarshalIndent(data, "", "  ")
-	fmt.Println(string(b))
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetEscapeHTML(false)
+	enc.SetIndent("", "  ")
+
+	if err := enc.Encode(data); err != nil {
+		fmt.Fprintf(os.Stderr, "Error encoding JSON: %v\n", err)
+	}
 }
 
 func PrintSuccess(msg string) {
