@@ -45,7 +45,6 @@ func TestMaxPlanDepth(t *testing.T) {
 	}
 }
 
-
 func TestFindRostersDir_Integration(t *testing.T) {
 	tmpDir := t.TempDir()
 	rostersDir := filepath.Join(tmpDir, models.SeedsDirName)
